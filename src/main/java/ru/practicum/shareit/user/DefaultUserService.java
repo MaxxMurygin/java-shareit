@@ -2,6 +2,9 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.common.AlreadyExistException;
+import ru.practicum.shareit.common.NotFoundException;
+import ru.practicum.shareit.common.ValidationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,9 +13,22 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DefaultUserService implements UserService {
     private final UserRepository userRepository;
+
     @Override
     public UserDto create(User user) {
-        return UserDto.toUserDto(userRepository.create(user));
+        String email = user.getEmail();
+        String name = user.getName();
+        if (email == null) {
+            throw new ValidationException("Email must be not null");
+        }
+        if (name == null) {
+            throw new ValidationException("Name must be not null");
+        }
+        User stored = userRepository.findByEmail(email);
+        if (stored != null) {
+            throw new AlreadyExistException(User.class, String.format("Email = %s", email));
+        }
+        return UserMapper.toUserDto(userRepository.create(user));
     }
 
     @Override
@@ -21,19 +37,24 @@ public class DefaultUserService implements UserService {
     }
 
     @Override
-    public UserDto update(User user) {
-        return UserDto.toUserDto(userRepository.update(user));
+    public UserDto update(int userId, User user) {
+        user.setId(userId);
+        User stored = userRepository.findById(userId);
+        if (stored == null) {
+            throw new NotFoundException(User.class, String.format("Id = %s", userId));
+        }
+        return UserMapper.toUserDto(userRepository.update(user));
     }
 
     @Override
     public List<UserDto> findAll() {
         return userRepository.findAll().stream()
-                .map(UserDto::toUserDto)
+                .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public UserDto findById(Integer userId) {
-        return UserDto.toUserDto(userRepository.findById(userId));
+        return UserMapper.toUserDto(userRepository.findById(userId));
     }
 }

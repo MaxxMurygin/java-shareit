@@ -9,11 +9,4 @@ public class UserDto {
     private int id;
     private String name;
     private String email;
-
-    public static UserDto toUserDto(User user) {
-        return UserDto.builder()
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
-    }
 }

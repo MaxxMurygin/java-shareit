@@ -7,7 +7,7 @@ public interface UserService {
 
     void remove(int userId);
 
-    UserDto update(User user);
+    UserDto update(int userId, User user);
 
     List<UserDto> findAll();
 
