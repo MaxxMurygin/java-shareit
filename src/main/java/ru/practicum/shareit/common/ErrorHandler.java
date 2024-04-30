@@ -23,6 +23,12 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
+    @ExceptionHandler({ForbiddenException.class})
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleForbidden(final RuntimeException e) {
+        log.debug(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
     @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleOtherException(final Exception e) {

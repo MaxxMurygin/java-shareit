@@ -10,7 +10,7 @@ public interface ItemService {
 
     void remove(int itemId);
 
-    ItemDto update(int itemId, Item item);
+    ItemDto update(int ownerId, int itemId, Item item);
 
     List<ItemDto> findAll();
 

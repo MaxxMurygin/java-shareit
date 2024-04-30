@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.common.ForbiddenException;
 import ru.practicum.shareit.common.NotFoundException;
 import ru.practicum.shareit.common.ValidationException;
 import ru.practicum.shareit.user.User;
@@ -47,7 +48,11 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public ItemDto update(int itemId, Item item) {
+    public ItemDto update(int ownerId, int itemId, Item item) {
+        Item stored = itemRepository.findById(itemId);
+        if (stored.getOwner() != ownerId) {
+            throw new ForbiddenException("Update item available only for owner");
+        }
         return ItemMapper.toItemDto(itemRepository.update(itemId, item));
     }
 

@@ -15,9 +15,9 @@ public class DefaultUserService implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto create(User user) {
-        String email = user.getEmail();
-        String name = user.getName();
+    public UserDto create(UserDto userDto) {
+        String email = userDto.getEmail();
+        String name = userDto.getName();
         if (email == null) {
             throw new ValidationException("Email must be not null");
         }
@@ -28,7 +28,7 @@ public class DefaultUserService implements UserService {
         if (stored != null) {
             throw new AlreadyExistException(User.class, String.format("Email = %s", email));
         }
-        return UserMapper.toUserDto(userRepository.create(user));
+        return UserMapper.toUserDto(userRepository.create(UserMapper.fromUserDto(userDto)));
     }
 
     @Override

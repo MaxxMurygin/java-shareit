@@ -17,7 +17,7 @@ public class ItemController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto create(@RequestHeader(value="X-Sharer-User-Id") int ownerId,
-            @RequestBody ItemDto itemDto) {
+                          @RequestBody ItemDto itemDto) {
         return itemService.create(ownerId, itemDto);
 
     }
@@ -34,9 +34,10 @@ public class ItemController {
 
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@Valid @RequestBody Item item,
+    public ItemDto update(@RequestHeader(value="X-Sharer-User-Id") int ownerId,
+                          @RequestBody Item item,
                           @PathVariable Integer itemId) {
-        return itemService.update(itemId, item);
+        return itemService.update(ownerId, itemId, item);
     }
 
     @DeleteMapping("/{itemId}")
