@@ -29,6 +29,7 @@ public class ErrorHandler {
         log.debug(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
+
     @ExceptionHandler({Exception.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleOtherException(final Exception e) {

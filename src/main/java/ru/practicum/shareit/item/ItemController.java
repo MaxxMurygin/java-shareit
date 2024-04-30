@@ -3,10 +3,7 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserDto;
 
-import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -14,12 +11,12 @@ import java.util.Collection;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto create(@RequestHeader(value="X-Sharer-User-Id") int ownerId,
+    public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") int ownerId,
                           @RequestBody ItemDto itemDto) {
         return itemService.create(ownerId, itemDto);
-
     }
 
     @GetMapping("/{itemId}")
@@ -28,13 +25,17 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> findAll() {
-        return itemService.findAll();
+    public Collection<ItemDto> findAll(@RequestHeader(value = "X-Sharer-User-Id") int ownerId) {
+        return itemService.findAll(ownerId);
     }
 
+    @GetMapping("/search")
+    public Collection<ItemDto> findByText(@RequestParam String text) {
+        return itemService.findByText(text);
+    }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(value="X-Sharer-User-Id") int ownerId,
+    public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") int ownerId,
                           @RequestBody Item item,
                           @PathVariable Integer itemId) {
         return itemService.update(ownerId, itemId, item);

@@ -3,15 +3,16 @@ package ru.practicum.shareit.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 @Slf4j
 public class InMemoryItemRepository implements ItemRepository {
     private final HashMap<Integer, Item> items = new HashMap<>();
     private int id;
+
     @Override
     public Item create(Item item) {
         int itemId = generateId();
@@ -32,8 +33,7 @@ public class InMemoryItemRepository implements ItemRepository {
         Item stored = items.get(itemId);
         String name = item.getName();
         String description = item.getDescription();
-        boolean isAvailable = item.getAvailable();
-        String request = item.getRequest();
+        Boolean isAvailable = item.getAvailable();
 
         if (name != null && !name.isBlank()) {
             stored.setName(name);
@@ -41,18 +41,37 @@ public class InMemoryItemRepository implements ItemRepository {
         if (description != null && !description.isBlank()) {
             stored.setDescription(description);
         }
-        stored.setAvailable(isAvailable);
+        if (isAvailable != null) {
+            stored.setAvailable(isAvailable);
+        }
         return stored;
     }
 
     @Override
-    public List<Item> findAll() {
-        return new ArrayList<>(items.values());
+    public List<Item> findAll(int ownerId) {
+        return items.values()
+                .stream()
+                .filter(item -> item.getOwner() == ownerId)
+                .collect(Collectors.toList());
     }
 
     @Override
     public Item findById(Integer itemId) {
         return items.get(itemId);
+    }
+
+    @Override
+    public List<Item> findByNameOrDescription(String text) {
+        String lowerText = text.toLowerCase();
+        if (lowerText.contains("отвер")) {
+            System.out.println();
+        }
+
+        return items.values().stream()
+                .filter(item -> (item.getName().toLowerCase().contains(lowerText) ||
+                        item.getDescription().toLowerCase().contains(lowerText)) &&
+                        item.getAvailable())
+                .collect(Collectors.toList());
     }
 
     private int generateId() {

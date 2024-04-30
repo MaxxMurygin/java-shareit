@@ -8,6 +8,7 @@ import ru.practicum.shareit.common.ValidationException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class DefaultItemService implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+
     @Override
     public ItemDto create(int ownerId, ItemDto itemDto) {
         Boolean isAvailable = itemDto.getAvailable();
@@ -57,8 +59,8 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public List<ItemDto> findAll() {
-        return itemRepository.findAll().stream()
+    public List<ItemDto> findAll(int ownerId) {
+        return itemRepository.findAll(ownerId).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
@@ -66,5 +68,15 @@ public class DefaultItemService implements ItemService {
     @Override
     public ItemDto findById(Integer itemId) {
         return ItemMapper.toItemDto(itemRepository.findById(itemId));
+    }
+
+    @Override
+    public List<ItemDto> findByText(String text) {
+        if (text.isBlank()) {
+            return new ArrayList<>();
+        }
+        return itemRepository.findByNameOrDescription(text).stream()
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 }

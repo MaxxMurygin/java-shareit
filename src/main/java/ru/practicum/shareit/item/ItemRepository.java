@@ -9,7 +9,10 @@ public interface ItemRepository {
 
     Item update(int itemId, Item item);
 
-    List<Item> findAll();
+    List<Item> findAll(int ownerId);
 
     Item findById(Integer itemId);
+
+    List<Item> findByNameOrDescription(String text);
+
 }
