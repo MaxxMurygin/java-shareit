@@ -10,11 +10,12 @@ import java.util.Collection;
 @RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
+    private static final String OWNER_ID = "X-Sharer-User-Id";
     private final ItemService itemService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto create(@RequestHeader(value = "X-Sharer-User-Id") int ownerId,
+    public ItemDto create(@RequestHeader(value = OWNER_ID) int ownerId,
                           @RequestBody ItemDto itemDto) {
         return itemService.create(ownerId, itemDto);
     }
@@ -25,7 +26,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> findAll(@RequestHeader(value = "X-Sharer-User-Id") int ownerId) {
+    public Collection<ItemDto> findAll(@RequestHeader(value = OWNER_ID) int ownerId) {
         return itemService.findAll(ownerId);
     }
 
@@ -35,7 +36,7 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(value = "X-Sharer-User-Id") int ownerId,
+    public ItemDto update(@RequestHeader(value = OWNER_ID) int ownerId,
                           @RequestBody Item item,
                           @PathVariable Integer itemId) {
         return itemService.update(ownerId, itemId, item);
