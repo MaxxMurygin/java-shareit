@@ -1,12 +1,50 @@
 package ru.practicum.shareit.item;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
-/**
- * TODO Sprint add-controllers.
- */
+import java.util.Collection;
+
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController {
+    private static final String OWNER_ID = "X-Sharer-User-Id";
+    private final ItemService itemService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ItemDto create(@RequestHeader(value = OWNER_ID) int ownerId,
+                          @RequestBody ItemDto itemDto) {
+        return itemService.create(ownerId, itemDto);
+    }
+
+    @GetMapping("/{itemId}")
+    public ItemDto findById(@PathVariable Integer itemId) {
+        return itemService.findById(itemId);
+    }
+
+    @GetMapping
+    public Collection<ItemDto> findAll(@RequestHeader(value = OWNER_ID) int ownerId) {
+        return itemService.findAll(ownerId);
+    }
+
+    @GetMapping("/search")
+    public Collection<ItemDto> findByText(@RequestParam String text) {
+        return itemService.findByText(text);
+    }
+
+    @PatchMapping("/{itemId}")
+    public ItemDto update(@RequestHeader(value = OWNER_ID) int ownerId,
+                          @RequestBody Item item,
+                          @PathVariable Integer itemId) {
+        return itemService.update(ownerId, itemId, item);
+    }
+
+    @DeleteMapping("/{itemId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remove(@PathVariable int itemId) {
+        itemService.remove(itemId);
+    }
 }
