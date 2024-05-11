@@ -19,7 +19,7 @@ public class DefaultItemService implements ItemService {
     private final UserRepository userRepository;
 
     @Override
-    public ItemDto create(int ownerId, ItemDto itemDto) {
+    public ItemDto create(Long ownerId, ItemDto itemDto) {
         Boolean isAvailable = itemDto.getAvailable();
         String name = itemDto.getName();
         String description = itemDto.getDescription();
@@ -34,40 +34,54 @@ public class DefaultItemService implements ItemService {
             throw new ValidationException("Wrong description");
         }
 
-        User owner = userRepository.findById(ownerId);
-        if (owner == null) {
-            throw new NotFoundException(User.class, String.format("Id = %s", ownerId));
-        }
+        userRepository.findById(ownerId).orElseThrow(() ->
+                new NotFoundException(User.class, String.format("Id = %s", ownerId)));
         Item item = ItemMapper.fromItemDto(itemDto);
         item.setOwner(ownerId);
-        return ItemMapper.toItemDto(itemRepository.create(item));
+        return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     @Override
-    public void remove(int itemId) {
-        itemRepository.remove(itemId);
+    public void remove(Long itemId) {
+        itemRepository.deleteById(itemId);
 
     }
 
     @Override
-    public ItemDto update(int ownerId, int itemId, Item item) {
-        Item stored = itemRepository.findById(itemId);
-        if (stored.getOwner() != ownerId) {
+    public ItemDto update(Long ownerId, Long itemId, ItemDto itemDto) {
+        Boolean isAvailable = itemDto.getAvailable();
+        String updatedName = itemDto.getName();
+        String updatedDescription = itemDto.getDescription();
+
+        Item stored = itemRepository.findById(itemId).orElseThrow(() ->
+                new NotFoundException(Item.class, String.format("Id = %s", itemId)));
+        if (!stored.getOwner().equals(ownerId)) {
             throw new ForbiddenException("Update item available only for owner");
         }
-        return ItemMapper.toItemDto(itemRepository.update(itemId, item));
+
+        if (isAvailable != null) {
+            stored.setAvailable(isAvailable);
+        }
+        if (updatedName != null) {
+            stored.setName(updatedName);
+        }
+        if (updatedDescription != null) {
+            stored.setDescription(updatedDescription);
+        }
+        return ItemMapper.toItemDto(itemRepository.save(stored));
     }
 
     @Override
-    public List<ItemDto> findAll(int ownerId) {
-        return itemRepository.findAll(ownerId).stream()
+    public List<ItemDto> findAll(Long ownerId) {
+        return itemRepository.findByOwner(ownerId).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ItemDto findById(Integer itemId) {
-        return ItemMapper.toItemDto(itemRepository.findById(itemId));
+    public ItemDto findById(Long itemId) {
+        return ItemMapper.toItemDto(itemRepository.findById(itemId).orElseThrow(() ->
+                new NotFoundException(Item.class, String.format("Id = %s", itemId))));
     }
 
     @Override
@@ -75,7 +89,7 @@ public class DefaultItemService implements ItemService {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        return itemRepository.findByNameOrDescription(text).stream()
+        return itemRepository.search(text).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }

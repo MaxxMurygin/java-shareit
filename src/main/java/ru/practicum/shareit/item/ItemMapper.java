@@ -12,11 +12,12 @@ public class ItemMapper {
     }
 
     public static Item fromItemDto(ItemDto itemDto) {
-        return Item.builder()
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .request(itemDto.getRequest())
-                .build();
+        Item item = new Item();
+
+        item.setName(itemDto.getName());
+        item.setDescription(itemDto.getDescription());
+        item.setAvailable(itemDto.getAvailable());
+        item.setRequest(itemDto.getRequest());
+        return item;
     }
 }

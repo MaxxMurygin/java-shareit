@@ -2,23 +2,22 @@ package ru.practicum.shareit.item;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "items")
-@Data @Builder
+@Data
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
     private String name;
     private String description;
+    @Column(name = "is_available")
     private Boolean available;
-    private int owner;
+    @Column(name = "owner_id")
+    private Long owner;
+    @Column(name = "request_id")
     private String request;
 }

@@ -15,18 +15,18 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto create(@RequestHeader(value = OWNER_ID) int ownerId,
+    public ItemDto create(@RequestHeader(value = OWNER_ID) Long ownerId,
                           @RequestBody ItemDto itemDto) {
         return itemService.create(ownerId, itemDto);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findById(@PathVariable Integer itemId) {
+    public ItemDto findById(@PathVariable Long itemId) {
         return itemService.findById(itemId);
     }
 
     @GetMapping
-    public Collection<ItemDto> findAll(@RequestHeader(value = OWNER_ID) int ownerId) {
+    public Collection<ItemDto> findAll(@RequestHeader(value = OWNER_ID) Long ownerId) {
         return itemService.findAll(ownerId);
     }
 
@@ -36,15 +36,15 @@ public class ItemController {
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(value = OWNER_ID) int ownerId,
-                          @RequestBody Item item,
-                          @PathVariable Integer itemId) {
-        return itemService.update(ownerId, itemId, item);
+    public ItemDto update(@RequestHeader(value = OWNER_ID) Long ownerId,
+                          @RequestBody ItemDto itemDto,
+                          @PathVariable Long itemId) {
+        return itemService.update(ownerId, itemId, itemDto);
     }
 
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable int itemId) {
+    public void remove(@PathVariable Long itemId) {
         itemService.remove(itemId);
     }
 }
