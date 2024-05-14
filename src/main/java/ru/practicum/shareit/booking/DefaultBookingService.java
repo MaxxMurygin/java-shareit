@@ -79,39 +79,49 @@ public class DefaultBookingService implements BookingService{
     }
 
     @Override
-    public List<BookingDto> findAllByBooker(Long bookerId, State state) {
-        List<Booking> result = new ArrayList<>();
+    public List<BookingDto> findAllByBooker(Long bookerId, String stateString) {
+        List<Booking> result;
+        State state;
+
         userRepository.findById(bookerId).orElseThrow(() ->
                 new NotFoundException(User.class, String.format("Id = %s", bookerId)));
-
-        if (state == null) {
+        if (stateString == null || stateString.isBlank()) {
             state = State.ALL;
+        } else {
+            try {
+                state = State.valueOf(stateString);
+            } catch (Exception e) {
+                throw new ValidationException("Unknown state: " + stateString);
+            }
         }
 
         switch (state) {
+            case ALL:
+                result = bookingRepository.findAllByBookerIdOrderByStartDesc(bookerId);
+                break;
             case PAST:
-
+                result = bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(bookerId, LocalDateTime.now());
                 break;
             case FUTURE:
-
+                result = bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(bookerId, LocalDateTime.now());
                 break;
             case CURRENT:
-
+                result = bookingRepository
+                        .findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(bookerId, LocalDateTime.now(), LocalDateTime.now());
                 break;
             case REJECTED:
-
+                result = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(bookerId, Status.REJECTED);
                 break;
             case WAITING:
-
+                result = bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(bookerId, Status.WAITING);
                 break;
-
             default:
-                result = bookingRepository.findAllByBookerId(bookerId);
+                result = new ArrayList<>();
         }
-
-        return result.stream()
+        List<BookingDto> resultDto = result.stream()
                 .map(BookingMapper::toBookingDto)
                 .collect(Collectors.toList());
+        return resultDto;
     }
 
     @Override
