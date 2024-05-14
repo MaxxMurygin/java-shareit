@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
 import lombok.Data;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.Future;
@@ -23,10 +25,12 @@ public class Booking {
     @NotNull
     @Future
     private LocalDateTime end;
-    @Column(name = "item_id")
-    private Long itemId;
-    @Column(name = "booker_id")
-    private Long bookerId;
-    @Enumerated(EnumType.ORDINAL)
+    @ManyToOne
+    @JoinColumn(name = "item_id")
+    private Item item;
+    @ManyToOne
+    @JoinColumn(name = "booker_id")
+    private User booker;
+    @Enumerated(EnumType.STRING)
     private Status status;
 }
