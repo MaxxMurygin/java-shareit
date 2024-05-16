@@ -2,8 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.common.AlreadyExistException;
-import ru.practicum.shareit.common.NotFoundException;
+import ru.practicum.shareit.common.EntityNotFoundException;
 import ru.practicum.shareit.common.ValidationException;
 
 import java.util.List;
@@ -37,7 +36,7 @@ public class DefaultUserService implements UserService {
         String updatedName = userDto.getName();
         String updatedEmail = userDto.getEmail();
         User stored = userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException(User.class, String.format("Id = %s", userId)));
+                new EntityNotFoundException(User.class, String.format("Id = %s", userId)));
         if (updatedName != null) {
             stored.setName(updatedName);
         }
@@ -58,6 +57,6 @@ public class DefaultUserService implements UserService {
     @Override
     public UserDto findById(Long userId) {
         return UserMapper.toUserDto(userRepository.findById(userId).
-                orElseThrow(() -> new NotFoundException(User.class, String.format("Id = %s", userId))));
+                orElseThrow(() -> new EntityNotFoundException(User.class, String.format("Id = %s", userId))));
     }
 }

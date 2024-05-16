@@ -1,25 +1,38 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingRepository;
+import ru.practicum.shareit.booking.CommentRepository;
 import ru.practicum.shareit.common.ForbiddenException;
+import ru.practicum.shareit.common.EntityNotFoundException;
 import ru.practicum.shareit.common.NotFoundException;
 import ru.practicum.shareit.common.ValidationException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DefaultItemService implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
+    Pageable oneStringPage = PageRequest.of(0, 1);
 
     @Override
-    public ItemDto create(Long ownerId, ItemDto itemDto) {
+    @Transactional
+    public ItemDto create(Long ownerId, ItemDto itemDto, Pageable page) {
         Boolean isAvailable = itemDto.getAvailable();
         String name = itemDto.getName();
         String description = itemDto.getDescription();
@@ -35,26 +48,27 @@ public class DefaultItemService implements ItemService {
         }
 
         userRepository.findById(ownerId).orElseThrow(() ->
-                new NotFoundException(User.class, String.format("Id = %s", ownerId)));
+                new EntityNotFoundException(User.class, String.format("Id = %s", ownerId)));
         Item item = ItemMapper.fromItemDto(itemDto);
         item.setOwner(ownerId);
-        return ItemMapper.toItemDto(itemRepository.save(item));
+        return ItemMapper.toItemDtoShort(itemRepository.save(item));
     }
 
     @Override
-    public void remove(Long itemId) {
+    @Transactional
+    public void remove(Long itemId, Pageable page) {
         itemRepository.deleteById(itemId);
-
     }
 
     @Override
-    public ItemDto update(Long ownerId, Long itemId, ItemDto itemDto) {
+    @Transactional
+    public ItemDto update(Long ownerId, Long itemId, ItemDto itemDto, Pageable page) {
         Boolean isAvailable = itemDto.getAvailable();
         String updatedName = itemDto.getName();
         String updatedDescription = itemDto.getDescription();
 
         Item stored = itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException(Item.class, String.format("Id = %s", itemId)));
+                new EntityNotFoundException(Item.class, String.format("Id = %s", itemId)));
         if (!stored.getOwner().equals(ownerId)) {
             throw new ForbiddenException("Update item available only for owner");
         }
@@ -68,29 +82,82 @@ public class DefaultItemService implements ItemService {
         if (updatedDescription != null) {
             stored.setDescription(updatedDescription);
         }
-        return ItemMapper.toItemDto(itemRepository.save(stored));
+        return ItemMapper.toItemDtoShort(itemRepository.save(stored));
     }
 
     @Override
-    public List<ItemDto> findAll(Long ownerId) {
+    public List<ItemDto> findAll(Long ownerId, Pageable page) {
         return itemRepository.findByOwner(ownerId).stream()
-                .map(ItemMapper::toItemDto)
+                .map(ItemMapper::toItemDtoShort)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ItemDto findById(Long itemId) {
-        return ItemMapper.toItemDto(itemRepository.findById(itemId).orElseThrow(() ->
-                new NotFoundException(Item.class, String.format("Id = %s", itemId))));
+    public ItemDto findById(Long ownerId, Long itemId, Pageable page) {
+        Item item = itemRepository.findById(itemId).orElseThrow(() ->
+                new EntityNotFoundException(Item.class, String.format("Id = %s", itemId)));
+
+        Booking lastBooking = bookingRepository
+                .findAllByItemIdAndStartBeforeOrderByStartDesc(itemId, LocalDateTime.now(), oneStringPage)
+                .stream()
+                .filter(b -> b.getItem().getOwner().equals(ownerId))
+                .findFirst()
+                .orElse(null);
+        Booking nextBooking = bookingRepository
+                .findAllByItemIdAndStartAfterOrderByStartAsc(itemId, LocalDateTime.now(), oneStringPage)
+                .stream()
+                .filter(b -> b.getItem().getOwner().equals(ownerId))
+                .findFirst()
+                .orElse(null);
+        return ItemMapper.toItemDtoWithBooking(item, lastBooking, nextBooking);
     }
 
     @Override
-    public List<ItemDto> findByText(String text) {
+    public List<ItemDto> findByText(String text, Pageable page) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }
         return itemRepository.search(text).stream()
-                .map(ItemMapper::toItemDto)
+                .map(ItemMapper::toItemDtoShort)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public CommentDto createComment(Long authorId, CommentDto commentDto, Pageable page) {
+        Long itemId = commentDto.getItem().getId();
+        String text = commentDto.getText();
+
+        if (text == null || text.isBlank()) {
+            throw new ValidationException("Wrong text");
+        }
+        if (commentDto.getItem().getId() == null) {
+            throw new ValidationException("Available must be");
+        }
+
+        itemRepository.findById(itemId).orElseThrow(() ->
+                new EntityNotFoundException(Item.class, String.format("Id = %s", itemId)));
+        userRepository.findById(authorId).orElseThrow(() ->
+                new EntityNotFoundException(User.class, String.format("Id = %s", authorId)));
+        bookingRepository
+                .findAllByItemId(itemId, page)
+                .stream()
+                .filter(b -> b.getBooker().getId().equals(authorId))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Author did not rent this item"));
+        Comment comment = CommentMapper.fromCommentDto(commentDto);
+
+        return CommentMapper.toCommentDto(commentRepository.save(comment));
+    }
+
+    @Override
+    public List<CommentDto> findAllComments(Long ownerId, Pageable page) {
+        return null;
+    }
+
+    @Override
+    public List<CommentDto> findCommentsByItemId(Long ownerId, Long itemId, Pageable page) {
+        return null;
+    }
+
 }
