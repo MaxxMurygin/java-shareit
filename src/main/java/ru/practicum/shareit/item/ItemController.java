@@ -26,7 +26,8 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDto findById(@RequestHeader(value = OWNER_ID) Long ownerId,
                             @PathVariable Long itemId) {
-        return itemService.findById(ownerId, itemId, defaultPage);
+        ItemDto itemDto = itemService.findById(ownerId, itemId, defaultPage);
+        return itemDto;
     }
 
     @GetMapping

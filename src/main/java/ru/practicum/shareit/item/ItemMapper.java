@@ -1,9 +1,10 @@
 package ru.practicum.shareit.item;
 
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingDto;
 
 public class ItemMapper {
-    public static ItemDto toItemDtoWithBooking(Item item, Booking lastBooking, Booking nextBooking) {
+    public static ItemDto toItemDtoWithBooking(Item item, BookingDto lastBooking, BookingDto nextBooking) {
         return ItemDto.builder()
                 .id(item.getId())
                 .name(item.getName())

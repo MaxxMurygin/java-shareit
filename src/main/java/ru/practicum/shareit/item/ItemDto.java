@@ -2,8 +2,8 @@ package ru.practicum.shareit.item;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingDto;
 
 @Data
 @Builder
@@ -12,8 +12,8 @@ public class ItemDto {
         private String name;
         private String description;
         private Boolean available;
-        private int owner;
+        private Long ownerId;
         private String request;
-        private Booking lastBooking;
-        private Booking nextBooking;
+        private BookingDto lastBooking;
+        private BookingDto nextBooking;
 }

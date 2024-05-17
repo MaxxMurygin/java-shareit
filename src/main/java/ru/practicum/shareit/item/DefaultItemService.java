@@ -1,11 +1,13 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.CommentRepository;
 import ru.practicum.shareit.common.ForbiddenException;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 @Transactional(readOnly = true)
 public class DefaultItemService implements ItemService {
     private final ItemRepository itemRepository;
@@ -67,6 +70,8 @@ public class DefaultItemService implements ItemService {
         String updatedName = itemDto.getName();
         String updatedDescription = itemDto.getDescription();
 
+        userRepository.findById(ownerId).orElseThrow(() ->
+                new EntityNotFoundException(User.class, String.format("Id = %s", ownerId)));
         Item stored = itemRepository.findById(itemId).orElseThrow(() ->
                 new EntityNotFoundException(Item.class, String.format("Id = %s", itemId)));
         if (!stored.getOwner().equals(ownerId)) {
@@ -87,8 +92,27 @@ public class DefaultItemService implements ItemService {
 
     @Override
     public List<ItemDto> findAll(Long ownerId, Pageable page) {
-        return itemRepository.findByOwner(ownerId).stream()
-                .map(ItemMapper::toItemDtoShort)
+        userRepository.findById(ownerId).orElseThrow(() ->
+                new EntityNotFoundException(User.class, String.format("Id = %s", ownerId)));
+
+        return itemRepository.findByOwnerOrderById(ownerId).stream()
+                .map(item ->ItemMapper.toItemDtoWithBooking(item,
+                        BookingMapper.toBookingDto(bookingRepository
+                                .findAllByItemIdAndStartBeforeOrderByEndDesc(item.getId(),
+                                        LocalDateTime.now(),
+                                        oneStringPage)
+                                .stream()
+                                .filter(b -> b.getItem().getOwner().equals(ownerId))
+                                .findFirst()
+                                .orElse(null)),
+                        BookingMapper.toBookingDto(bookingRepository
+                                .findAllByItemIdAndStartAfterOrderByStartAsc(item.getId(),
+                                        LocalDateTime.now(),
+                                        oneStringPage)
+                                .stream()
+                                .filter(b -> b.getItem().getOwner().equals(ownerId))
+                                .findFirst()
+                                .orElse(null))))
                 .collect(Collectors.toList());
     }
 
@@ -98,7 +122,7 @@ public class DefaultItemService implements ItemService {
                 new EntityNotFoundException(Item.class, String.format("Id = %s", itemId)));
 
         Booking lastBooking = bookingRepository
-                .findAllByItemIdAndStartBeforeOrderByStartDesc(itemId, LocalDateTime.now(), oneStringPage)
+                .findAllByItemIdAndStartBeforeOrderByEndDesc(itemId, LocalDateTime.now(), oneStringPage)
                 .stream()
                 .filter(b -> b.getItem().getOwner().equals(ownerId))
                 .findFirst()
@@ -109,7 +133,12 @@ public class DefaultItemService implements ItemService {
                 .filter(b -> b.getItem().getOwner().equals(ownerId))
                 .findFirst()
                 .orElse(null);
-        return ItemMapper.toItemDtoWithBooking(item, lastBooking, nextBooking);
+//        ItemDto itemDto = ;
+//        log.info("{} \n {} \n {}\n {}", LocalDateTime.now(), lastBooking, nextBooking, itemDto);
+
+        return ItemMapper.toItemDtoWithBooking(item,
+                BookingMapper.toBookingDto(lastBooking),
+                BookingMapper.toBookingDto(nextBooking));
     }
 
     @Override
