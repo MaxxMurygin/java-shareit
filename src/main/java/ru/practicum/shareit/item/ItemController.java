@@ -18,32 +18,31 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDto create(@RequestHeader(value = OWNER_ID) Long ownerId,
-                          @RequestBody ItemDto itemDto) {
+    public ItemDtoRequest create(@RequestHeader(value = OWNER_ID) Long ownerId,
+                                 @RequestBody ItemDtoRequest itemDto) {
         return itemService.create(ownerId, itemDto, defaultPage);
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findById(@RequestHeader(value = OWNER_ID) Long ownerId,
-                            @PathVariable Long itemId) {
-        ItemDto itemDto = itemService.findById(ownerId, itemId, defaultPage);
-        return itemDto;
+    public ItemDtoResponse findById(@RequestHeader(value = OWNER_ID) Long ownerId,
+                                   @PathVariable Long itemId) {
+        return itemService.findById(ownerId, itemId, defaultPage);
     }
 
     @GetMapping
-    public Collection<ItemDto> findAll(@RequestHeader(value = OWNER_ID) Long ownerId) {
+    public Collection<ItemDtoResponse> findAll(@RequestHeader(value = OWNER_ID) Long ownerId) {
         return itemService.findAll(ownerId, defaultPage);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> findByText(@RequestParam String text) {
+    public Collection<ItemDtoRequest> findByText(@RequestParam String text) {
         return itemService.findByText(text, defaultPage);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestHeader(value = OWNER_ID) Long ownerId,
-                          @RequestBody ItemDto itemDto,
-                          @PathVariable Long itemId) {
+    public ItemDtoRequest update(@RequestHeader(value = OWNER_ID) Long ownerId,
+                                 @RequestBody ItemDtoRequest itemDto,
+                                 @PathVariable Long itemId) {
         return itemService.update(ownerId, itemId, itemDto, defaultPage);
     }
 
@@ -52,4 +51,13 @@ public class ItemController {
     public void remove(@PathVariable Long itemId) {
         itemService.remove(itemId, defaultPage);
     }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoResponse createComment(@RequestHeader(value = OWNER_ID) Long authorId,
+                                           @RequestBody CommentDtoRequest commentDtoRequest,
+                                           @PathVariable Long itemId) {
+        return itemService.createComment(authorId, itemId, commentDtoRequest, defaultPage);
+
+    }
+
 }

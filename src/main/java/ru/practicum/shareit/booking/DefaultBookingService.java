@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
-public class DefaultBookingService implements BookingService{
+public class DefaultBookingService implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -166,7 +166,7 @@ public class DefaultBookingService implements BookingService{
                 result = bookingRepository.findByOwnerIdAndStatus(ownerId, Status.WAITING, page);
                 break;
             default:
-                result = new ArrayList<>() ;
+                result = new ArrayList<>();
         }
 
         return result.stream()

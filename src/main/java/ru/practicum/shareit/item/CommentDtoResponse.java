@@ -2,13 +2,15 @@ package ru.practicum.shareit.item;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.user.User;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class CommentDto {
+public class CommentDtoResponse {
     private Long id;
     private String text;
-    private Item item;
-    private User author;
+    private String authorName;
+    private LocalDateTime created;
+
 }

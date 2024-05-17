@@ -56,7 +56,8 @@ public class DefaultUserService implements UserService {
 
     @Override
     public UserDto findById(Long userId) {
-        return UserMapper.toUserDto(userRepository.findById(userId).
-                orElseThrow(() -> new EntityNotFoundException(User.class, String.format("Id = %s", userId))));
+        return UserMapper.toUserDto(userRepository
+                .findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(User.class, String.format("Id = %s", userId))));
     }
 }
