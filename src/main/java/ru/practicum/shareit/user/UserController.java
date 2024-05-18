@@ -25,7 +25,7 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public UserDto findById(@PathVariable Integer userId) {
+    public UserDto findById(@PathVariable Long userId) {
         return userService.findById(userId);
     }
 
@@ -36,14 +36,14 @@ public class UserController {
 
 
     @PatchMapping("/{userId}")
-    public UserDto update(@Valid @RequestBody User user,
-                          @PathVariable Integer userId) {
-        return userService.update(userId, user);
+    public UserDto update(@Valid @RequestBody UserDto userDto,
+                          @PathVariable Long userId) {
+        return userService.update(userId, userDto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable int id) {
+    public void remove(@PathVariable Long id) {
         userService.remove(id);
     }
 }
