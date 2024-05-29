@@ -51,7 +51,7 @@ public class DefaultItemService implements ItemService {
 
         userRepository.findById(ownerId).orElseThrow(() ->
                 new EntityNotFoundException(User.class, String.format("Id = %s", ownerId)));
-        Item item = ItemMapper.fromItemDtoRequest(itemDto);
+        Item item = ItemMapper.fromItemDtoShort(itemDto);
         item.setOwner(ownerId);
         return ItemMapper.toItemDtoShort(itemRepository.save(item));
     }

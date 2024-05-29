@@ -32,14 +32,16 @@ public class ItemRequestController {
     }
 
     @GetMapping("/{requestId}")
-    ItemRequestDtoResponseWithItems getByRequestId(@PathVariable Long requestId) {
-        return itemRequestService.getAllByRequestId(requestId);
+    ItemRequestDtoResponseWithItems getByRequestId(@RequestHeader(value = REQUESTER_ID) Long requesterId,
+                                                   @PathVariable Long requestId) {
+        return itemRequestService.getAllByRequestId(requestId, requesterId);
     }
 
     @GetMapping("/all")
-    List<ItemRequestDtoResponseSimple> getAll(@RequestParam(required = false) Integer from,
+    List<ItemRequestDtoResponseWithItems> getAll(@RequestHeader(value = REQUESTER_ID) Long requesterId,
+                                              @RequestParam(required = false) Integer from,
                                               @RequestParam(required = false) Integer size) {
         userPage = PageMaker.make(from, size, Sort.by("Created").descending());
-        return itemRequestService.getAll(userPage);
+        return itemRequestService.getAll(requesterId, userPage);
     }
 }

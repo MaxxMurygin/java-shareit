@@ -2,7 +2,6 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional(readOnly = true)
-public class DefaultItemRequestService implements ItemRequestService{
+public class DefaultItemRequestService implements ItemRequestService {
     private final ItemRequestRepository itemRequestRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
@@ -54,9 +53,11 @@ public class DefaultItemRequestService implements ItemRequestService{
     }
 
     @Override
-    public ItemRequestDtoResponseWithItems getAllByRequestId(Long requestId) {
+    public ItemRequestDtoResponseWithItems getAllByRequestId(Long requestId, Long requesterId) {
         ItemRequest itemRequest = itemRequestRepository.findById(requestId).orElseThrow(() ->
                 new EntityNotFoundException(ItemRequest.class, String.format("Id = %s", requestId)));
+        userRepository.findById(requesterId).orElseThrow(() ->
+                new EntityNotFoundException(User.class, String.format("Id = %s", requesterId)));
 
         List<ItemDtoShort> items = itemRepository.findByRequestId(requestId)
                 .stream()
@@ -67,10 +68,14 @@ public class DefaultItemRequestService implements ItemRequestService{
     }
 
     @Override
-    public List<ItemRequestDtoResponseSimple> getAll(Pageable page) {
-        return itemRequestRepository.findAll(page)
+    public List<ItemRequestDtoResponseWithItems> getAll(Long requesterId, Pageable page) {
+        List<ItemRequest> requests = itemRequestRepository.findAllByRequesterIdNot(requesterId, page);
+        return requests
                 .stream()
-                .map(ItemRequestMapper::toRequestDtoSimple)
+                .map(r -> ItemRequestMapper.toRequestDtoWithItems(r, itemRepository.findByRequestId(r.getId())
+                        .stream()
+                        .map(ItemMapper::toItemDtoShort)
+                        .collect(Collectors.toList())))
                 .collect(Collectors.toList());
     }
 }

@@ -21,7 +21,7 @@ public class PageMaker {
         if (size <= 0) {
             throw new IllegalArgumentException("Size parameter should be positive");
         }
-        return PageRequest.of(from, size);
+        return PageRequest.of(from / size, size);
     }
 
     public static Pageable make(Integer from, Integer size, Sort sort) {
@@ -37,6 +37,6 @@ public class PageMaker {
         if (size <= 0) {
             throw new IllegalArgumentException("Size parameter should be positive");
         }
-        return PageRequest.of(from, size, sort);
+        return PageRequest.of(from / size, size, sort);
     }
 }

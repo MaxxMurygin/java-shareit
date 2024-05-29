@@ -32,17 +32,7 @@ public class ItemMapper {
                 .build();
     }
 
-//    public static ItemDtoForRequests toItemDtoForRequest(Item item) {
-//        return ItemDtoForRequests.builder()
-//                .id(item.getId())
-//                .name(item.getName())
-//                .description(item.getDescription())
-//                .available(item.getAvailable())
-//                .requestId(item.getRequestId())
-//                .build();
-//    }
-
-    public static Item fromItemDtoRequest(ItemDtoShort itemDto) {
+    public static Item fromItemDtoShort(ItemDtoShort itemDto) {
         Item item = new Item();
 
         item.setName(itemDto.getName());
