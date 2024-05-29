@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.common.PageMaker;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class BookingController {
     private static final String BOOKER_ID = "X-Sharer-User-Id";
     Pageable defaultPage = PageRequest.of(0, 100);
+    Pageable userPage;
     private final BookingService bookingService;
 
     @PostMapping
@@ -25,14 +27,20 @@ public class BookingController {
 
     @GetMapping
     public List<BookingDto> findByBooker(@RequestHeader(value = BOOKER_ID) Long bookerId,
-                                         @RequestParam(required = false) String state) {
-        return bookingService.findAllByBooker(bookerId, state, defaultPage);
+                                         @RequestParam(required = false) String state,
+                                         @RequestParam(required = false) Integer from,
+                                         @RequestParam(required = false) Integer size) {
+        userPage = PageMaker.make(from, size);
+        return bookingService.findAllByBooker(bookerId, state, userPage);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> findByOwner(@RequestHeader(value = BOOKER_ID) Long ownerId,
-                                         @RequestParam(required = false) String state) {
-        return bookingService.findAllByOwner(ownerId, state, defaultPage);
+                                         @RequestParam(required = false) String state,
+                                        @RequestParam(required = false) Integer from,
+                                        @RequestParam(required = false) Integer size) {
+        userPage = PageMaker.make(from, size);
+        return bookingService.findAllByOwner(ownerId, state, userPage);
     }
 
     @GetMapping("/{bookingId}")

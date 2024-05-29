@@ -18,8 +18,8 @@ public class ItemController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ItemDtoRequest create(@RequestHeader(value = OWNER_ID) Long ownerId,
-                                 @RequestBody ItemDtoRequest itemDto) {
+    public ItemDtoShort create(@RequestHeader(value = OWNER_ID) Long ownerId,
+                               @RequestBody ItemDtoShort itemDto) {
         return itemService.create(ownerId, itemDto, defaultPage);
     }
 
@@ -35,14 +35,14 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public Collection<ItemDtoRequest> findByText(@RequestParam String text) {
+    public Collection<ItemDtoShort> findByText(@RequestParam String text) {
         return itemService.findByText(text, defaultPage);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDtoRequest update(@RequestHeader(value = OWNER_ID) Long ownerId,
-                                 @RequestBody ItemDtoRequest itemDto,
-                                 @PathVariable Long itemId) {
+    public ItemDtoShort update(@RequestHeader(value = OWNER_ID) Long ownerId,
+                               @RequestBody ItemDtoShort itemDto,
+                               @PathVariable Long itemId) {
         return itemService.update(ownerId, itemId, itemDto, defaultPage);
     }
 

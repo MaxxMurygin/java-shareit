@@ -34,7 +34,7 @@ public class DefaultItemService implements ItemService {
 
     @Override
     @Transactional
-    public ItemDtoRequest create(Long ownerId, ItemDtoRequest itemDto, Pageable page) {
+    public ItemDtoShort create(Long ownerId, ItemDtoShort itemDto, Pageable page) {
         Boolean isAvailable = itemDto.getAvailable();
         String name = itemDto.getName();
         String description = itemDto.getDescription();
@@ -64,7 +64,7 @@ public class DefaultItemService implements ItemService {
 
     @Override
     @Transactional
-    public ItemDtoRequest update(Long ownerId, Long itemId, ItemDtoRequest itemDto, Pageable page) {
+    public ItemDtoShort update(Long ownerId, Long itemId, ItemDtoShort itemDto, Pageable page) {
         Boolean isAvailable = itemDto.getAvailable();
         String updatedName = itemDto.getName();
         String updatedDescription = itemDto.getDescription();
@@ -148,7 +148,7 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public List<ItemDtoRequest> findByText(String text, Pageable page) {
+    public List<ItemDtoShort> findByText(String text, Pageable page) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }

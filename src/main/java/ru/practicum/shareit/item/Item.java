@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.Data;
+import ru.practicum.shareit.request.ItemRequest;
 
 import javax.persistence.*;
 
@@ -18,5 +19,5 @@ public class Item {
     @Column(name = "owner_id")
     private Long owner;
     @Column(name = "request_id")
-    private String request;
+    private Long requestId;
 }
