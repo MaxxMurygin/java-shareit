@@ -4,41 +4,46 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.common.PageMaker;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
+@Validated
 public class BookingController {
+    private final BookingService bookingService;
     private static final String BOOKER_ID = "X-Sharer-User-Id";
     Pageable defaultPage = PageRequest.of(0, 100);
     Pageable userPage;
-    private final BookingService bookingService;
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookingDto create(@RequestHeader(value = BOOKER_ID) Long bookerId,
                           @RequestBody BookingDto bookingDto) {
-        return bookingService.create(bookerId, bookingDto, defaultPage);
+        return bookingService.create(bookerId, bookingDto);
     }
 
     @GetMapping
     public List<BookingDto> findByBooker(@RequestHeader(value = BOOKER_ID) Long bookerId,
-                                         @RequestParam(required = false) String state,
-                                         @RequestParam(required = false) Integer from,
-                                         @RequestParam(required = false) Integer size) {
+                                         @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                         @PositiveOrZero  @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                         @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         userPage = PageMaker.make(from, size);
         return bookingService.findAllByBooker(bookerId, state, userPage);
     }
 
     @GetMapping("/owner")
     public List<BookingDto> findByOwner(@RequestHeader(value = BOOKER_ID) Long ownerId,
-                                         @RequestParam(required = false) String state,
-                                        @RequestParam(required = false) Integer from,
-                                        @RequestParam(required = false) Integer size) {
+                                        @RequestParam(name = "state", defaultValue = "ALL") String state,
+                                        @PositiveOrZero  @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                        @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
         userPage = PageMaker.make(from, size);
         return bookingService.findAllByOwner(ownerId, state, userPage);
     }
@@ -48,7 +53,6 @@ public class BookingController {
                                @PathVariable Long bookingId) {
         return bookingService.findById(bookingId, userId, defaultPage);
     }
-
 
     @PatchMapping("/{bookingId}")
     public BookingDto approve(@RequestHeader(value = BOOKER_ID) Long bookerId,

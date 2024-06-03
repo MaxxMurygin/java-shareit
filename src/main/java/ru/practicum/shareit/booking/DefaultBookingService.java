@@ -29,7 +29,7 @@ public class DefaultBookingService implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto create(Long bookerId, BookingDto bookingDto, Pageable page) {
+    public BookingDto create(Long bookerId, BookingDto bookingDto) {
         Long itemId = bookingDto.getItemId();
         LocalDateTime start = bookingDto.getStart();
         LocalDateTime end = bookingDto.getEnd();

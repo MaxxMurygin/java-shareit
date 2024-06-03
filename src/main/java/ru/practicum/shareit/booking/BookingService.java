@@ -4,7 +4,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface BookingService {
-    BookingDto create(Long bookerId, BookingDto bookingDto, Pageable page);
+    BookingDto create(Long bookerId, BookingDto bookingDto);
 
     BookingDto approve(Long itemId, Long bookerId, Boolean isApproved, Pageable page);
 
