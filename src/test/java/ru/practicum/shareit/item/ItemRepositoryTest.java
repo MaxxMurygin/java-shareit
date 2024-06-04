@@ -31,28 +31,28 @@ class ItemRepositoryTest {
     void createWithEmptyName() {
         item.setName(null);
         assertThrows(DataIntegrityViolationException.class,
-                () ->repository.save(item));
+                () -> repository.save(item));
     }
 
     @Test
     void createWithEmptyDescription() {
         item.setDescription(null);
         assertThrows(DataIntegrityViolationException.class,
-                () ->repository.save(item));
+                () -> repository.save(item));
     }
 
     @Test
     void createWithEmptyAvailable() {
         item.setAvailable(null);
         assertThrows(DataIntegrityViolationException.class,
-                () ->repository.save(item));
+                () -> repository.save(item));
     }
 
     @Test
     void createWithNonExistingUser() {
         item.setOwner(99L);
         assertThrows(DataIntegrityViolationException.class,
-                () ->repository.save(item));
+                () -> repository.save(item));
     }
 
     @Test

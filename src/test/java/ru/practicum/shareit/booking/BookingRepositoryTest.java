@@ -42,21 +42,21 @@ class BookingRepositoryTest {
     void createWithWrongUser() {
         booking.getBooker().setId(99L);
         assertThrows(DataIntegrityViolationException.class,
-                () ->repository.save(booking));
+                () -> repository.save(booking));
     }
 
     @Test
     void createWithWrongItem() {
         booking.getItem().setId(99L);
         assertThrows(DataIntegrityViolationException.class,
-                () ->repository.save(booking));
+                () -> repository.save(booking));
     }
 
     @Test
     void createWithWrongStatus() {
         booking.setStatus(null);
         assertThrows(DataIntegrityViolationException.class,
-                () ->repository.save(booking));
+                () -> repository.save(booking));
     }
 
     @Test

@@ -33,21 +33,21 @@ class ItemRequestRepositoryTest {
     void createWithNonExistingUser() {
         itemRequest.setRequesterId(999L);
         assertThrows(DataIntegrityViolationException.class,
-                () ->repository.save(itemRequest));
+                () -> repository.save(itemRequest));
     }
 
     @Test
     void createWithEmptyDescription() {
         itemRequest.setDescription("");
         assertThrows(ConstraintViolationException.class,
-                () ->repository.save(itemRequest));
+                () -> repository.save(itemRequest));
     }
 
     @Test
     void createWithEmptyCreation() {
         itemRequest.setCreated(null);
         assertThrows(ConstraintViolationException.class,
-                () ->repository.save(itemRequest));
+                () -> repository.save(itemRequest));
     }
 
     @Test
