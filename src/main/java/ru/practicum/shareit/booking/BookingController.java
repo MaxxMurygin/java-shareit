@@ -51,13 +51,13 @@ public class BookingController {
     @GetMapping("/{bookingId}")
     public BookingDto findById(@RequestHeader(value = BOOKER_ID) Long userId,
                                @PathVariable Long bookingId) {
-        return bookingService.findById(bookingId, userId, defaultPage);
+        return bookingService.findById(bookingId, userId);
     }
 
     @PatchMapping("/{bookingId}")
     public BookingDto approve(@RequestHeader(value = BOOKER_ID) Long bookerId,
                           @RequestParam Boolean approved,
                              @PathVariable Long bookingId) {
-        return bookingService.approve(bookingId, bookerId, approved, defaultPage);
+        return bookingService.approve(bookingId, bookerId, approved);
     }
 }

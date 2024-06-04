@@ -58,7 +58,7 @@ public class DefaultBookingService implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto approve(Long bookingId, Long bookerId, Boolean isApproved, Pageable page) {
+    public BookingDto approve(Long bookingId, Long bookerId, Boolean isApproved) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new EntityNotFoundException(Booking.class, String.format("Id = %s", bookingId)));
         User booker = userRepository.findById(bookerId).orElseThrow(() ->
@@ -175,7 +175,7 @@ public class DefaultBookingService implements BookingService {
     }
 
     @Override
-    public BookingDto findById(Long bookingId, Long userId, Pageable page) {
+    public BookingDto findById(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(() ->
                 new EntityNotFoundException(Booking.class, String.format("Id = %s", bookingId)));
         userRepository.findById(userId).orElseThrow(() ->

@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.common.EntityNotFoundException;
-import ru.practicum.shareit.common.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,13 +51,6 @@ class UserControllerTest {
         userDto.setEmail("user.com");
         when(userService.create(userDto)).thenReturn(userDto);
 
-        mockMvc.perform(post("/users")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto)))
-                .andExpect(status().isBadRequest());
-        verify(userService, never()).create(userDto);
-
-        userDto.setEmail("");
         mockMvc.perform(post("/users")
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))

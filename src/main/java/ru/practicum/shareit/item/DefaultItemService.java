@@ -34,7 +34,7 @@ public class DefaultItemService implements ItemService {
 
     @Override
     @Transactional
-    public ItemDtoShort create(Long ownerId, ItemDtoShort itemDto, Pageable page) {
+    public ItemDtoShort create(Long ownerId, ItemDtoShort itemDto) {
         Boolean isAvailable = itemDto.getAvailable();
         String name = itemDto.getName();
         String description = itemDto.getDescription();
@@ -58,13 +58,13 @@ public class DefaultItemService implements ItemService {
 
     @Override
     @Transactional
-    public void remove(Long itemId, Pageable page) {
+    public void remove(Long itemId) {
         itemRepository.deleteById(itemId);
     }
 
     @Override
     @Transactional
-    public ItemDtoShort update(Long ownerId, Long itemId, ItemDtoShort itemDto, Pageable page) {
+    public ItemDtoShort update(Long ownerId, Long itemId, ItemDtoShort itemDto) {
         Boolean isAvailable = itemDto.getAvailable();
         String updatedName = itemDto.getName();
         String updatedDescription = itemDto.getDescription();
@@ -120,9 +120,11 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public ItemDtoResponse findById(Long ownerId, Long itemId, Pageable page) {
+    public ItemDtoResponse findById(Long ownerId, Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new EntityNotFoundException(Item.class, String.format("Id = %s", itemId)));
+        userRepository.findById(ownerId).orElseThrow(() ->
+                new EntityNotFoundException(User.class, String.format("Id = %s", ownerId)));
 
         Booking lastBooking = bookingRepository
                 .findAllByItemIdAndStartBeforeOrderByEndDesc(itemId, LocalDateTime.now(), oneStringPage)
