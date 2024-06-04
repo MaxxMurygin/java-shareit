@@ -100,9 +100,9 @@ class DefaultItemServiceTest {
         ItemDtoResponse stored = itemService.findById(ownerId, itemId);
         assertNotNull(stored);
 
-        assertThrows(EntityNotFoundException.class, () -> itemService.update(99L, itemId , itemToUpdate));
+        assertThrows(EntityNotFoundException.class, () -> itemService.update(99L, itemId, itemToUpdate));
         assertThrows(EntityNotFoundException.class, () -> itemService.update(ownerId, 99L, itemToUpdate));
-        assertThrows(ForbiddenException.class, () -> itemService.update(2L, itemId , itemToUpdate));
+        assertThrows(ForbiddenException.class, () -> itemService.update(2L, itemId, itemToUpdate));
     }
 
     @Test

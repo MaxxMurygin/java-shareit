@@ -173,6 +173,7 @@ class UserControllerTest {
                 .andExpect(status().isBadRequest());
         verify(userService, never()).update(userId, userDto);
     }
+    
     @SneakyThrows
     @Test
     void remove() {
