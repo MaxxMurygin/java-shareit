@@ -95,9 +95,29 @@ class DefaultBookingServiceTest {
         assertNotNull(bookingList);
         assertEquals(bookingList.size(), 5);
 
+        bookingList = bookingService.findAllByBooker(bookerId, "", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 5);
+
         bookingList = bookingService.findAllByBooker(bookerId, "REJECTED", defaultPage);
         assertNotNull(bookingList);
         assertEquals(bookingList.size(), 1);
+
+        bookingList = bookingService.findAllByBooker(bookerId, "WAITING", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 0);
+
+        bookingList = bookingService.findAllByBooker(bookerId, "PAST", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 5);
+
+        bookingList = bookingService.findAllByBooker(bookerId, "FUTURE", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 0);
+
+        bookingList = bookingService.findAllByBooker(bookerId, "CURRENT", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 0);
     }
 
     @Test
@@ -107,9 +127,29 @@ class DefaultBookingServiceTest {
         assertNotNull(bookingList);
         assertEquals(bookingList.size(), 2);
 
+        bookingList = bookingService.findAllByOwner(ownerId, "", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 2);
+
         bookingList = bookingService.findAllByOwner(ownerId, "REJECTED", defaultPage);
         assertNotNull(bookingList);
         assertEquals(bookingList.size(), 1);
+
+        bookingList = bookingService.findAllByOwner(ownerId, "WAITING", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 0);
+
+        bookingList = bookingService.findAllByOwner(ownerId, "PAST", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 1);
+
+        bookingList = bookingService.findAllByOwner(ownerId, "FUTURE", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 1);
+
+        bookingList = bookingService.findAllByOwner(ownerId, "CURRENT", defaultPage);
+        assertNotNull(bookingList);
+        assertEquals(bookingList.size(), 0);
     }
 
     @Test
