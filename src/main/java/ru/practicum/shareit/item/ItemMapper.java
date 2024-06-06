@@ -14,7 +14,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .request(item.getRequest())
+                .requestId(item.getRequestId())
                 .ownerId(item.getOwner())
                 .lastBooking(lastBooking)
                 .nextBooking(nextBooking)
@@ -22,21 +22,23 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemDtoRequest toItemDtoShort(Item item) {
-        return ItemDtoRequest.builder()
+    public static ItemDtoShort toItemDtoShort(Item item) {
+        return ItemDtoShort.builder()
                 .id(item.getId())
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
+                .requestId(item.getRequestId())
                 .build();
     }
 
-    public static Item fromItemDtoRequest(ItemDtoRequest itemDto) {
+    public static Item fromItemDtoShort(ItemDtoShort itemDto) {
         Item item = new Item();
 
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
+        item.setRequestId(itemDto.getRequestId());
         return item;
     }
 }

@@ -34,7 +34,7 @@ public class DefaultItemService implements ItemService {
 
     @Override
     @Transactional
-    public ItemDtoRequest create(Long ownerId, ItemDtoRequest itemDto, Pageable page) {
+    public ItemDtoShort create(Long ownerId, ItemDtoShort itemDto) {
         Boolean isAvailable = itemDto.getAvailable();
         String name = itemDto.getName();
         String description = itemDto.getDescription();
@@ -51,20 +51,20 @@ public class DefaultItemService implements ItemService {
 
         userRepository.findById(ownerId).orElseThrow(() ->
                 new EntityNotFoundException(User.class, String.format("Id = %s", ownerId)));
-        Item item = ItemMapper.fromItemDtoRequest(itemDto);
+        Item item = ItemMapper.fromItemDtoShort(itemDto);
         item.setOwner(ownerId);
         return ItemMapper.toItemDtoShort(itemRepository.save(item));
     }
 
     @Override
     @Transactional
-    public void remove(Long itemId, Pageable page) {
+    public void remove(Long itemId) {
         itemRepository.deleteById(itemId);
     }
 
     @Override
     @Transactional
-    public ItemDtoRequest update(Long ownerId, Long itemId, ItemDtoRequest itemDto, Pageable page) {
+    public ItemDtoShort update(Long ownerId, Long itemId, ItemDtoShort itemDto) {
         Boolean isAvailable = itemDto.getAvailable();
         String updatedName = itemDto.getName();
         String updatedDescription = itemDto.getDescription();
@@ -120,9 +120,11 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public ItemDtoResponse findById(Long ownerId, Long itemId, Pageable page) {
+    public ItemDtoResponse findById(Long ownerId, Long itemId) {
         Item item = itemRepository.findById(itemId).orElseThrow(() ->
                 new EntityNotFoundException(Item.class, String.format("Id = %s", itemId)));
+        userRepository.findById(ownerId).orElseThrow(() ->
+                new EntityNotFoundException(User.class, String.format("Id = %s", ownerId)));
 
         Booking lastBooking = bookingRepository
                 .findAllByItemIdAndStartBeforeOrderByEndDesc(itemId, LocalDateTime.now(), oneStringPage)
@@ -148,7 +150,7 @@ public class DefaultItemService implements ItemService {
     }
 
     @Override
-    public List<ItemDtoRequest> findByText(String text, Pageable page) {
+    public List<ItemDtoShort> findByText(String text, Pageable page) {
         if (text.isBlank()) {
             return new ArrayList<>();
         }

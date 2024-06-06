@@ -5,17 +5,17 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface ItemService {
-    ItemDtoRequest create(Long ownerId, ItemDtoRequest itemDto, Pageable page);
+    ItemDtoShort create(Long ownerId, ItemDtoShort itemDto);
 
-    void remove(Long itemId, Pageable page);
+    void remove(Long itemId);
 
-    ItemDtoRequest update(Long ownerId, Long itemId, ItemDtoRequest itemDto, Pageable page);
+    ItemDtoShort update(Long ownerId, Long itemId, ItemDtoShort itemDto);
 
     List<ItemDtoResponse> findAll(Long ownerId, Pageable page);
 
-    ItemDtoResponse findById(Long ownerId, Long itemId, Pageable page);
+    ItemDtoResponse findById(Long ownerId, Long itemId);
 
-    List<ItemDtoRequest> findByText(String text, Pageable page);
+    List<ItemDtoShort> findByText(String text, Pageable page);
 
     CommentDtoResponse createComment(Long authorId, Long itemId, CommentDtoRequest commentDtoRequest, Pageable page);
 }

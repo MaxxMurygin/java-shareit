@@ -1,12 +1,16 @@
 package ru.practicum.shareit.item;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "items")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,5 +22,5 @@ public class Item {
     @Column(name = "owner_id")
     private Long owner;
     @Column(name = "request_id")
-    private String request;
+    private Long requestId;
 }
