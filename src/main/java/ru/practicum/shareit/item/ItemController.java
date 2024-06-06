@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.common.PageMaker;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -41,7 +40,7 @@ public class ItemController {
     public Collection<ItemDtoResponse> findAll(@Positive @RequestHeader(value = OWNER_ID) Long ownerId,
                                    @PositiveOrZero  @RequestParam(name = "from", defaultValue = "0") Integer from,
                                    @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        userPage = PageMaker.make(from, size);
+        userPage = PageRequest.of(from / size, size);
         return itemService.findAll(ownerId, userPage);
     }
 
@@ -49,7 +48,7 @@ public class ItemController {
     public Collection<ItemDtoShort> findByText(@RequestParam(name = "text") String text,
                                    @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                    @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        userPage = PageMaker.make(from, size);
+        userPage = PageRequest.of(from / size, size);
         return itemService.findByText(text, userPage);
     }
 

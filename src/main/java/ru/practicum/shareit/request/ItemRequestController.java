@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.common.PageMaker;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -45,7 +44,7 @@ public class ItemRequestController {
     List<ItemRequestDtoResponseWithItems> getAll(@RequestHeader(value = REQUESTER_ID) Long requesterId,
                                      @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
                                      @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        userPage = PageMaker.make(from, size, Sort.by("Created").descending());
+        userPage = PageRequest.of(from, size, Sort.by("Created").descending());
         return itemRequestService.getAll(requesterId, userPage);
     }
 }
