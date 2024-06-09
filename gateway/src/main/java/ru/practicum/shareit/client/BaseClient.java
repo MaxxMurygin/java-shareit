@@ -71,10 +71,6 @@ public class BaseClient {
         return delete(path, null, null);
     }
 
-//        protected void delete(String path) {
-//            delete(path, null, null);
-//        }
-
     protected ResponseEntity<Object> delete(String path, long userId) {
         return delete(path, userId, null);
     }

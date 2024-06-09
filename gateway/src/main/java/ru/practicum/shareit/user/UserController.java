@@ -42,9 +42,9 @@ public class UserController {
         return userClient.patchUser(userId, userDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remove(@PathVariable Long userId) {
+    public void remove(@PathVariable long userId) {
         userClient.deleteUser(userId);
     }
 }
