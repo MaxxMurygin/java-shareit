@@ -8,8 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -24,26 +22,26 @@ public class ItemRequestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    ItemRequestDtoResponseSimple create(@RequestHeader(value = REQUESTER_ID) Long requesterId,
+    public ItemRequestDtoResponseSimple create(@RequestHeader(value = REQUESTER_ID) Long requesterId,
                                         @RequestBody ItemRequestDtoRequest itemRequestDtoRequest) {
         return itemRequestService.create(requesterId, itemRequestDtoRequest);
     }
 
     @GetMapping
-    List<ItemRequestDtoResponseWithItems> getByRequesterId(@RequestHeader(value = REQUESTER_ID) Long requesterId) {
+    public List<ItemRequestDtoResponseWithItems> getByRequesterId(@RequestHeader(value = REQUESTER_ID) Long requesterId) {
         return itemRequestService.getAllByRequesterId(requesterId, defaultPage);
     }
 
     @GetMapping("/{requestId}")
-    ItemRequestDtoResponseWithItems getByRequestId(@RequestHeader(value = REQUESTER_ID) Long requesterId,
+    public ItemRequestDtoResponseWithItems getByRequestId(@RequestHeader(value = REQUESTER_ID) Long requesterId,
                                                    @PathVariable Long requestId) {
         return itemRequestService.getAllByRequestId(requestId, requesterId);
     }
 
     @GetMapping("/all")
-    List<ItemRequestDtoResponseWithItems> getAll(@RequestHeader(value = REQUESTER_ID) Long requesterId,
-                                     @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                     @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public List<ItemRequestDtoResponseWithItems> getAll(@RequestHeader(value = REQUESTER_ID) Long requesterId,
+                                     @RequestParam(name = "from", defaultValue = "0") Integer from,
+                                     @RequestParam(name = "size", defaultValue = "10") Integer size) {
         userPage = PageRequest.of(from, size, Sort.by("Created").descending());
         return itemRequestService.getAll(requesterId, userPage);
     }

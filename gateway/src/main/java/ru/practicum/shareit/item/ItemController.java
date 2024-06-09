@@ -2,7 +2,6 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,7 +13,6 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.Collection;
 
 @Controller
 @RequestMapping(path = "/items")
@@ -34,7 +32,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ResponseEntity<Object> getItem(@Positive @RequestHeader(value = OWNER_ID) Long ownerId,
-                                    @PathVariable Long itemId) {
+                                          @Positive @PathVariable Long itemId) {
         return itemClient.getItem(ownerId, itemId);
     }
 
@@ -54,23 +52,22 @@ public class ItemController {
 
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> update(@Positive @RequestHeader(value = OWNER_ID) Long ownerId,
-                               @Valid @RequestBody ItemDto itemDto,
-                               @PathVariable Long itemId) {
+                                         @Valid @RequestBody ItemDto itemDto,
+                                         @Positive @PathVariable Long itemId) {
         return itemClient.patchItem(ownerId, itemId, itemDto);
     }
 
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remove(@Positive @RequestHeader(value = OWNER_ID) Long ownerId,
-                       @PathVariable Long itemId) {
+                       @Positive @PathVariable Long itemId) {
         itemClient.deleteItem(ownerId, itemId);
     }
 
     @PostMapping("/{itemId}/comment")
     public ResponseEntity<Object> createComment(@Positive @RequestHeader(value = OWNER_ID) Long authorId,
-                                            @Valid @RequestBody CommentDto commentDto,
-                                            @PathVariable Long itemId) {
+                                                @Valid @RequestBody CommentDto commentDto,
+                                                @Positive @PathVariable Long itemId) {
         return itemClient.createComment(authorId, itemId, commentDto);
-
     }
 }

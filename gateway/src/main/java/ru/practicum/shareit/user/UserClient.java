@@ -24,8 +24,8 @@ public class UserClient extends BaseClient {
         );
     }
 
-    public ResponseEntity<Object> createUser(UserDto requestDto) {
-        return post("", requestDto);
+    public ResponseEntity<Object> createUser(UserDto userDto) {
+        return post("", userDto);
     }
 
     public ResponseEntity<Object> getUser(long userId) {

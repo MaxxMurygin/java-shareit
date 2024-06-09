@@ -1,19 +1,17 @@
 package ru.practicum.shareit.booking;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.booking.dto.BookItemRequestDto;
+import ru.practicum.shareit.booking.dto.BookingState;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import ru.practicum.shareit.booking.dto.BookItemRequestDto;
-import ru.practicum.shareit.booking.dto.BookingState;
-
-import java.util.List;
 
 
 @Controller
@@ -45,7 +43,7 @@ public class BookingController {
 
 	@GetMapping("/{bookingId}")
 	public ResponseEntity<Object> getBooking(@RequestHeader(BOOKER_ID) long userId,
-			@PathVariable(name = "bookingId") Long bookingId) {
+			@Positive @PathVariable(name = "bookingId") Long bookingId) {
 		log.info("Get booking {}, userId={}", bookingId, userId);
 		return bookingClient.getBooking(userId, bookingId);
 	}
@@ -63,7 +61,7 @@ public class BookingController {
 	@PatchMapping("/{bookingId}")
 	public ResponseEntity<Object>  approve(@RequestHeader(value = BOOKER_ID) Long bookerId,
 							  @RequestParam(name = "approved") Boolean approved,
-							  @PathVariable(name = "bookingId") Long bookingId) {
+							  @Positive @PathVariable(name = "bookingId") Long bookingId) {
 		return bookingClient.approveBooking(bookingId, bookerId, String.valueOf(approved));
 	}
 }
