@@ -95,38 +95,6 @@ class BookingControllerTest {
         assertEquals(objectMapper.writeValueAsString(bookingDtoList), result);
     }
 
-//    @SneakyThrows
-//    @Test
-//    void findByBookerWithWrongParams() {
-//        Long bookerId = bookingDto.getBookerId();
-//        String state = "ALL";
-//        List<BookingDto> bookingDtoList = new ArrayList<>();
-//        bookingDtoList.add(bookingDto);
-//
-//        when(bookingService.findAllByBooker(bookerId, state, testPage)).thenReturn(bookingDtoList);
-//
-//        mockMvc.perform(get("/bookings")
-//                        .header(BOOKER_ID, 1)
-//                        .param("state", "ALL")
-//                        .param("from", "-1")
-//                        .param("size", "10"))
-//                .andExpect(status().isBadRequest());
-//
-//        mockMvc.perform(get("/bookings")
-//                        .header(BOOKER_ID, 1)
-//                        .param("state", "ALL")
-//                        .param("from", "2")
-//                        .param("size", "0"))
-//                .andExpect(status().isBadRequest());
-//
-//        mockMvc.perform(get("/bookings")
-//                        .param("from", "-1")
-//                        .param("size", "10"))
-//                .andExpect(status().isBadRequest());
-//
-//        verify(bookingService, never()).findAllByBooker(bookerId, state, testPage);
-//    }
-
     @SneakyThrows
     @Test
     void findByOwnerOk() {
@@ -149,38 +117,6 @@ class BookingControllerTest {
         verify(bookingService).findAllByOwner(ownerId, state, testPage);
         assertEquals(objectMapper.writeValueAsString(bookingDtoList), result);
     }
-
-//    @SneakyThrows
-//    @Test
-//    void findByOwnerWithWrongParams() {
-//        Long ownerId = bookingDto.getItem().getOwner();
-//        String state = "ALL";
-//        List<BookingDto> bookingDtoList = new ArrayList<>();
-//        bookingDtoList.add(bookingDto);
-//
-//        when(bookingService.findAllByBooker(ownerId, state, testPage)).thenReturn(bookingDtoList);
-//
-//        mockMvc.perform(get("/bookings")
-//                        .header(BOOKER_ID, 1)
-//                        .param("state", "ALL")
-//                        .param("from", "-1")
-//                        .param("size", "10"))
-//                .andExpect(status().isBadRequest());
-//
-//        mockMvc.perform(get("/bookings")
-//                        .header(BOOKER_ID, 1)
-//                        .param("state", "ALL")
-//                        .param("from", "2")
-//                        .param("size", "0"))
-//                .andExpect(status().isBadRequest());
-//
-//        mockMvc.perform(get("/bookings")
-//                        .param("from", "-1")
-//                        .param("size", "10"))
-//                .andExpect(status().isBadRequest());
-//
-//        verify(bookingService, never()).findAllByOwner(ownerId, state, testPage);
-//    }
 
     @SneakyThrows
     @Test

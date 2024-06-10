@@ -45,39 +45,6 @@ class UserControllerTest {
         assertEquals(objectMapper.writeValueAsString(userDto), result);
     }
 
-//    @SneakyThrows
-//    @Test
-//    void createWithWrongEmail() {
-//        userDto.setEmail("user.com");
-//        when(userService.create(userDto)).thenReturn(userDto);
-//
-//        mockMvc.perform(post("/users")
-//                        .contentType(APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userDto)))
-//                .andExpect(status().isBadRequest());
-//        verify(userService, never()).create(userDto);
-//    }
-//
-//    @SneakyThrows
-//    @Test
-//    void createWithWrongUserName() {
-//        userDto.setName("");
-//        when(userService.create(userDto)).thenReturn(userDto);
-//
-//        mockMvc.perform(post("/users")
-//                        .contentType(APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userDto)))
-//                .andExpect(status().isBadRequest());
-//        verify(userService, never()).create(userDto);
-//
-//        userDto.setName("More50SymbolsNameMore50SymbolsNameMore50SymbolsName");
-//        mockMvc.perform(post("/users")
-//                        .contentType(APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userDto)))
-//                .andExpect(status().isBadRequest());
-//        verify(userService, never()).create(userDto);
-//    }
-
     @SneakyThrows
     @Test
     void findByIdExistingUser() {
@@ -145,34 +112,6 @@ class UserControllerTest {
         verify(userService).update(userId, userDto);
         assertEquals(objectMapper.writeValueAsString(userDto), result);
     }
-//
-//    @SneakyThrows
-//    @Test
-//    void updateWithWrongEmail() {
-//        Long userId = userDto.getId();
-//        userDto.setEmail("user@u ser.com");
-//        when(userService.update(userId, userDto)).thenReturn(userDto);
-//
-//        mockMvc.perform(patch("/users/{userId}", userId)
-//                        .contentType(APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userDto)))
-//                .andExpect(status().isBadRequest());
-//        verify(userService, never()).update(userId, userDto);
-//    }
-//
-//    @SneakyThrows
-//    @Test
-//    void updateWithWrongName() {
-//        Long userId = userDto.getId();
-//        userDto.setName("");
-//        when(userService.update(userId, userDto)).thenReturn(userDto);
-//
-//        mockMvc.perform(patch("/users/{userId}", userId)
-//                        .contentType(APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(userDto)))
-//                .andExpect(status().isBadRequest());
-//        verify(userService, never()).update(userId, userDto);
-//    }
 
     @SneakyThrows
     @Test

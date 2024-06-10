@@ -43,8 +43,6 @@ class DefaultUserServiceTest {
         userToCreate.setName("testUser");
         userToCreate.setEmail(null);
         assertThrows(ValidationException.class, () -> userService.create(userToCreate));
-//        userToCreate.setEmail("wrong.com");
-//        assertThrows(ConstraintViolationException.class, () -> userService.create(userToCreate));
     }
 
     @Test
