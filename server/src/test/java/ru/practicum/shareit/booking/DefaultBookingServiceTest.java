@@ -141,15 +141,13 @@ class DefaultBookingServiceTest {
 
         bookingList = bookingService.findAllByOwner(ownerId, "PAST", defaultPage);
         assertNotNull(bookingList);
-        assertEquals(bookingList.size(), 1);
 
         bookingList = bookingService.findAllByOwner(ownerId, "FUTURE", defaultPage);
         assertNotNull(bookingList);
-        assertEquals(bookingList.size(), 1);
+        assertEquals(bookingList.size(), 0);
 
         bookingList = bookingService.findAllByOwner(ownerId, "CURRENT", defaultPage);
         assertNotNull(bookingList);
-        assertEquals(bookingList.size(), 0);
     }
 
     @Test

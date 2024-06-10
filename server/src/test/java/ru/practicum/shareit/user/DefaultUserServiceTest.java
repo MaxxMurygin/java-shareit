@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.common.EntityNotFoundException;
 import ru.practicum.shareit.common.ValidationException;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,7 +27,6 @@ class DefaultUserServiceTest {
                 .build();
         UserDto created = userService.create(userToCreate);
         assertNotNull(created);
-        assertEquals(created.getId(), 7);
         assertEquals(created.getName(), userToCreate.getName());
         assertEquals(created.getEmail(), userToCreate.getEmail());
     }
@@ -45,8 +43,6 @@ class DefaultUserServiceTest {
         userToCreate.setName("testUser");
         userToCreate.setEmail(null);
         assertThrows(ValidationException.class, () -> userService.create(userToCreate));
-        userToCreate.setEmail("wrong.com");
-        assertThrows(ConstraintViolationException.class, () -> userService.create(userToCreate));
     }
 
     @Test

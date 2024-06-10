@@ -75,7 +75,6 @@ class ItemRepositoryTest {
         List<Item> searched = repository.findByRequestId(1L);
 
         assertEquals(2, searched.size());
-//        assertEquals("Щётка для обуви", searched.get(0).getName());
         assertEquals(item.getName(), searched.get(1).getName());
     }
 }
