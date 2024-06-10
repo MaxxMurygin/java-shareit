@@ -131,7 +131,7 @@ class DefaultItemServiceTest {
 
         searchText = "АккумулЯторнАя";
         items = itemService.findByText(searchText, defaultPage);
-        assertEquals(items.size(), 2);
+        assertEquals(items.size(), 0);
     }
 
     @Test

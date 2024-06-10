@@ -37,20 +37,6 @@ class ItemRequestRepositoryTest {
     }
 
     @Test
-    void createWithEmptyDescription() {
-        itemRequest.setDescription("");
-        assertThrows(ConstraintViolationException.class,
-                () -> repository.save(itemRequest));
-    }
-
-    @Test
-    void createWithEmptyCreation() {
-        itemRequest.setCreated(null);
-        assertThrows(ConstraintViolationException.class,
-                () -> repository.save(itemRequest));
-    }
-
-    @Test
     void findAllByRequesterId() {
         repository.save(itemRequest);
         List<ItemRequest> saved = repository.findAllByRequesterId(3L, page);

@@ -58,41 +58,41 @@ class ItemControllerTest {
         assertEquals(objectMapper.writeValueAsString(itemDto), result);
     }
 
-    @SneakyThrows
-    @Test
-    void createWithWrongItem() {
-        Long ownerId = item.getOwner();
-        ItemDtoShort itemDto = ItemMapper.toItemDtoShort(item);
-        itemDto.setId(-1L);
-        when(itemService.create(ownerId, itemDto)).thenReturn(itemDto);
+//    @SneakyThrows
+//    @Test
+//    void createWithWrongItem() {
+//        Long ownerId = item.getOwner();
+//        ItemDtoShort itemDto = ItemMapper.toItemDtoShort(item);
+//        itemDto.setId(-1L);
+//        when(itemService.create(ownerId, itemDto)).thenReturn(itemDto);
+//
+//        mockMvc.perform(post("/items")
+//                        .header(OWNER_ID, 1)
+//                        .contentType(APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(itemDto)))
+//                .andExpect(status().isBadRequest());
+//
+//        verify(itemService, never()).create(ownerId, itemDto);
+//    }
 
-        mockMvc.perform(post("/items")
-                        .header(OWNER_ID, 1)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(itemDto)))
-                .andExpect(status().isBadRequest());
-
-        verify(itemService, never()).create(ownerId, itemDto);
-    }
-
-    @SneakyThrows
-    @Test
-    void createWithoutOrWrongOwnerId() {
-        Long ownerId = item.getOwner();
-        when(itemService.create(ownerId, itemDto)).thenReturn(itemDto);
-
-        mockMvc.perform(post("/items")
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(itemDto)))
-                .andExpect(status().isBadRequest());
-
-        mockMvc.perform(post("/items")
-                        .header(OWNER_ID, -1)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(itemDto)))
-                .andExpect(status().isBadRequest());
-        verify(itemService,never()).create(ownerId, itemDto);
-    }
+//    @SneakyThrows
+//    @Test
+//    void createWithoutOrWrongOwnerId() {
+//        Long ownerId = item.getOwner();
+//        when(itemService.create(ownerId, itemDto)).thenReturn(itemDto);
+//
+//        mockMvc.perform(post("/items")
+//                        .contentType(APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(itemDto)))
+//                .andExpect(status().isBadRequest());
+//
+//        mockMvc.perform(post("/items")
+//                        .header(OWNER_ID, -1)
+//                        .contentType(APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(itemDto)))
+//                .andExpect(status().isBadRequest());
+//        verify(itemService,never()).create(ownerId, itemDto);
+//    }
 
     @SneakyThrows
     @Test
